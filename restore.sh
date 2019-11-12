@@ -27,22 +27,22 @@ then
 echo "ERRROOOOR ...."
 exit
 fi
-#FULL Backup
+#FULL Restore
 if [ "$i" -eq "$f" ]
 then
 while [ $p != $t ]
 do
 a=$(cat $C | sed -n ${p}p)
-echo "$p - Backup $a"
-dd if=$D/${a} of=$S/${a}.img
+echo "$p - Restore $a"
+dd if=$S/${a}.img of=$D/${a} 
 p=$((p+1))
 echo "--------------" 
 sleep 3
 done 
-#Backup determined partition
+#Restore determined partition
 else
 a=$(cat $C | sed -n ${i}p)
-echo "$i - Backup $a"
-dd if=$D/${a} of=$S/${a}.img
+echo "$i - Restore $a"
+dd if=$S/${a}.img of=$D/${a} 
 fi
 exit
