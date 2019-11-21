@@ -72,23 +72,23 @@ PARTITION_LIST="/tmp/part.txt"
 PARTITION_NUMBER=$(ls $CORRECT_EMMC | wc -l)
 PARTITION_NUMBER=$((PARTITION_NUMBER+1))
 PARTITION_NUMBER_INCLUDING_ALL=$((PARTITION_NUMBER+1))
-PARTITION_LISTING_FULL_RESTORE=1
+PARTITION_LISTING_FULL_BACKUP=1
 PARTITION_LISTING=1
 
 # Obtain how much partitions does exist
 ls $CORRECT_EMMC >$PARTITION_LIST
-
+mkdir $BACKUP_LOCATION
 # List all partitions
-echo "Choose a partition to restore: "
+echo "Choose a partition to backup: "
 while [ $PARTITION_LISTING != $PARTITION_NUMBER ]
 	do
 	a=$(cat $PARTITION_LIST | sed -n ${PARTITION_LISTING}p)
-	echo "$PARTITION_LISTING - $a"
+	echo "$PARTITION_LISTING -  $a"
 	PARTITION_LISTING=$((PARTITION_LISTING+1))
 done 
 
-# Choose a partition to restore
-echo "$PARTITION_NUMBER_INCLUDING_ALL - ALL"
+# Choose a partition to backup
+echo "$PARTITION_NUMBER_INCLUDING_ALL -  ALL"
 echo "Type the partition's correspondent number"
 read -p "Number=" INPUT
 
@@ -104,23 +104,23 @@ if [ "$INPUT" -gt "$PARTITION_NUMBER_INCLUDING_ALL" ]
 	exit
 fi
 
-# Do a full restore (all partitions)
+# Do a full backup (all partitions)
 if [ "$INPUT" -eq "$PARTITION_NUMBER_INCLUDING_ALL" ]
 	then
-	while [ $PARTITION_LISTING_FULL_RESTORE != $PARTITION_NUMBER ]
+	while [ $PARTITION_LISTING_FULL_BACKUP != $PARTITION_NUMBER ]
 		do
-		a=$(cat $PARTITION_LIST | sed -n ${PARTITION_LISTING_FULL_RESTORE}p)
-		echo "$PARTITION_LISTING_FULL_RESTORE - Restore $a"
-		dd if=$BACKUP_LOCATION/${a}.img of=$CORRECT_EMMC/${a} 
-		PARTITION_LISTING_FULL_RESTORE=$((PARTITION_LISTING_FULL_RESTORE+1))
+		a=$(cat $PARTITION_LIST | sed -n ${PARTITION_LISTING_FULL_BACKUP}p)
+		echo "$PARTITION_LISTING_FULL_BACKUP - Backup $a"
+		dd if=$CORRECT_EMMC${a} of=$BACKUP_LOCATION/${a}.img
+		PARTITION_LISTING_FULL_BACKUP=$((PARTITION_LISTING_FULL_BACKUP+1))
 		echo "--------------" 
 		sleep 3
 	done 
 
-# Restore a specific partition
+# Backup a determined partition
 	else
 	a=$(cat $PARTITION_LIST | sed -n ${INPUT}p)
-	echo "$INPUT - Restore $a"
-	dd if=$BACKUP_LOCATION/${a}.img of=$CORRECT_EMMC/${a} 
+	echo "$INPUT - Backup $a"
+	dd if=$CORRECT_EMMC/${a} of=$BACKUP_LOCATION/${a}.img
 fi
 exit
