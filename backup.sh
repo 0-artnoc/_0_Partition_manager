@@ -24,6 +24,7 @@ if [ -z "$BACKUP_LOCATION" ]
 fi
 		
 echo ""
+mkdir $BACKUP_LOCATION
 
 # Obtain how much eMMC folders does exist
 ls $EMMC_LOCATION >$EMMC_POSSIBILITIES_LIST
